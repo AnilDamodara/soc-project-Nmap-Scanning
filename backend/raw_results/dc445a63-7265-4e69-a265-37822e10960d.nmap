@@ -1,0 +1,13 @@
+# Nmap 7.98 scan initiated Sun May  3 09:04:19 2026 as: nmap -T4 -F -sV -oX - -oN raw_results\\dc445a63-7265-4e69-a265-37822e10960d.nmap scanme.nmap.org
+Nmap scan report for scanme.nmap.org (45.33.32.156)
+Host is up (0.23s latency).
+Other addresses for scanme.nmap.org (not scanned): 2600:3c01::f03c:91ff:fe18:bb2f
+Not shown: 97 closed tcp ports (reset)
+PORT   STATE    SERVICE VERSION
+22/tcp open     ssh     OpenSSH 6.6.1p1 Ubuntu 2ubuntu2.13 (Ubuntu Linux; protocol 2.0)
+25/tcp filtered smtp
+80/tcp open     http    Apache httpd 2.4.7 ((Ubuntu))
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Sun May  3 09:04:32 2026 -- 1 IP address (1 host up) scanned in 13.11 seconds
