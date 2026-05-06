@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nmap Network Scanner</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content header-top">
+                <div>
+                    <h1>🔍 Network Scanner</h1>
+                    <p>Powered by Nmap</p>
+                </div>
+                <button id="modeToggle" class="btn btn-toggle">Light Mode</button>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs">
+            <button class="tab-button active" data-tab="scanner">Scanner</button>
+            <button class="tab-button" data-tab="history">Scan History</button>
+            <button class="tab-button" data-tab="results">Results</button>
+        </nav>
+
+        <!-- Scanner Tab -->
+        <section id="scanner" class="tab-content active">
+            <div class="scan-container">
+                <h2>Start a New Scan</h2>
+                
+                <form id="scanForm" class="scan-form">
+                    <div class="form-group">
+                        <label for="targets">Target(s) (IP or Hostname)</label>
+                        <textarea
+                            id="targets"
+                            name="targets"
+                            rows="4"
+                            placeholder="192.168.1.1, example.com, 10.0.0.1"
+                            required
+                        ></textarea>
+                        <small>Separate multiple targets with commas, semicolons, or new lines.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="scanType">Scan Type</label>
+                        <select id="scanType" name="scanType">
+                            <option value="quick">Quick Scan</option>
+                            <option value="full">Full Scan</option>
+                            <option value="aggressive">Aggressive Scan</option>
+                            <option value="vulnerability">Vulnerability Scan</option>
+                            <option value="service_detection">Service Detection</option>
+                            <option value="os_detection">OS Detection</option>
+                            <option value="basic">Basic Port Scan</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Start Scan</button>
+                </form>
+
+                <!-- Scan Progress -->
+                <div id="scanProgress" class="scan-progress hidden">
+                    <div class="spinner"></div>
+                    <p id="progressMessage">Starting scan...</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+
+                <div id="scanLogs" class="scan-logs hidden">
+                    <div class="logs-header">Live Scan Logs</div>
+                    <div id="logList" class="log-list"></div>
+                </div>
+
+                <!-- Alert Messages -->
+                <div id="alerts">
+                    <div id="successAlert" class="alert alert-success hidden"></div>
+                    <div id="errorAlert" class="alert alert-error hidden"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- History Tab -->
+        <section id="history" class="tab-content">
+            <div class="history-container">
+                <h2>Scan History</h2>
+                <button id="refreshHistory" class="btn btn-secondary">Refresh</button>
+                
+                <table id="historyTable" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Target</th>
+                            <th>Scan Type</th>
+                            <th>Status</th>
+                            <th>Start Time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody">
+                        <tr class="empty-state">
+                            <td colspan="5">No scans yet. Start a new scan!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Results Tab -->
+        <section id="results" class="tab-content">
+            <div class="results-container">
+                <h2>Scan Results</h2>
+                
+                <div id="resultsView" class="results-view">
+                    <p class="empty-state">Select a scan from history to view detailed results</p>
+                </div>
+
+                <div id="resultsDetail" class="results-detail hidden">
+                    <button id="backButton" class="btn btn-secondary">← Back</button>
+                    
+                    <div class="results-header">
+                        <h3 id="resultTarget"></h3>
+                        <p id="resultInfo"></p>
+                        <div class="results-meta">
+                            <span id="riskBadge" class="risk-badge risk-none">Risk: None</span>
+                            <span id="scanStatusBadge" class="risk-badge badge-completed">Status: Completed</span>
+                        </div>
+                    </div>
+
+                    <div class="chart-grid">
+                        <div class="chart-card">
+                            <h4>Open vs Closed / Filtered</h4>
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <h4>Port Distribution</h4>
+                            <canvas id="portChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="hosts-container" id="hostsContainer">
+                        <!-- Hosts and ports will be populated here -->
+                    </div>
+
+                    <div class="results-actions">
+                        <button id="exportResults" class="btn btn-secondary">Export JSON</button>
+                        <button id="downloadPdf" class="btn btn-secondary">Download PDF</button>
+                        <button id="downloadRaw" class="btn btn-secondary">Download Raw Output</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal for detailed port info -->
+    <div id="portModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="portModalTitle"></h3>
+            <div id="portModalBody"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
